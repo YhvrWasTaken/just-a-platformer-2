@@ -289,25 +289,49 @@ function nextFrame(timeStamp) {
         if (editor?.godMode) player.isDead = false;
         // jumping
         if (player.xg) {
-          if ((player.g < 0 && leftPush > 0) || (player.g > 0 && rightPush > 0))
-            player.currentJump = player.maxJump;
           if (
-            (control.left || control.right) &&
-            player.currentJump > 0 &&
-            canJump
-          ) {
+            (player.g < 0 && leftPush > 0) ||
+            (player.g > 0 && rightPush > 0)
+          )
+            player.currentJump = player.maxJump;
+          let shouldJump = false;
+          switch (controlMethod) {
+            case "keyboard":
+              shouldJump =
+                (control.left || control.right) &&
+                player.currentJump > 0 &&
+                canJump;
+              break;
+            case "slider":
+              shouldJump =
+                control.jump && player.currentJump > 0 && canJump;
+              break;
+          }
+          if (shouldJump) {
             player.xv = Math.sign(player.g) * -375;
             player.currentJump--;
             canJump = false;
           }
         } else {
-          if ((player.g < 0 && topPush > 0) || (player.g > 0 && bottomPush > 0))
-            player.currentJump = player.maxJump;
           if (
-            (control.up || control.down) &&
-            player.currentJump > 0 &&
-            canJump
-          ) {
+            (player.g < 0 && topPush > 0) ||
+            (player.g > 0 && bottomPush > 0)
+          )
+            player.currentJump = player.maxJump;
+          let shouldJump = false;
+          switch (controlMethod) {
+            case "keyboard":
+              shouldJump =
+                (control.up || control.down) &&
+                player.currentJump > 0 &&
+                canJump;
+              break;
+            case "slider":
+              shouldJump =
+                control.jump && player.currentJump > 0 && canJump;
+              break;
+          }
+          if (shouldJump) {
             player.yv = Math.sign(player.g) * -375;
             player.currentJump--;
             canJump = false;
@@ -316,17 +340,35 @@ function nextFrame(timeStamp) {
         // change acceleration
         if (player.xg) {
           player.xa = 1000 * player.g;
-          player.ya = (control.down - control.up) * player.moveSpeed;
-          if (!control.up && player.yv < 0)
-            player.ya = Math.max(player.ya + friction, -player.yv);
-          if (!control.down && player.yv > 0)
-            player.ya = Math.min(player.ya - friction, -player.yv);
+          switch (controlMethod) {
+            case "keyboard":
+              player.ya = (control.down - control.up) * player.moveSpeed;
+              if (!control.up && player.yv < 0)
+                player.ya = Math.max(player.ya + friction, -player.yv);
+              if (!control.down && player.yv > 0)
+                player.ya = Math.min(player.ya - friction, -player.yv);
+              break;
+            case "slider":
+              player.ya = control.slider * player.moveSpeed;
+              if (control.slider === 0) player.ya = -player.yv * friction;
+              break;
+          }
         } else {
           player.ya = 1000 * player.g;
-          player.xa = (control.right - control.left) * player.moveSpeed;
-          if (!control.left && player.xv < 0) player.xa = -player.xv * friction;
-          if (!control.right && player.xv > 0)
-            player.xa = -player.xv * friction;
+          switch (controlMethod) {
+            case "keyboard":
+              player.xa =
+                (control.right - control.left) * player.moveSpeed;
+              if (!control.left && player.xv < 0)
+                player.xa = -player.xv * friction;
+              if (!control.right && player.xv > 0)
+                player.xa = -player.xv * friction;
+              break;
+            case "slider":
+              player.xa = control.slider * player.moveSpeed;
+              if (control.slider === 0) player.xa = -player.xv * friction;
+              break;
+          }
         }
         // change velocity
         player.xv += player.xa * t * (!player.xg * 9 + 1);

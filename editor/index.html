@@ -21,10 +21,21 @@
     onload="init()"
     style="
       height: 100%;
+      max-width: 100%;
       margin: 0;
       overflow: hidden;
       background: #eeeeee;
       font-family: monospace;
+    "
+  >
+  <div
+    id="container"
+    style="
+      height: 100%;
+      max-height: 100%;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
     "
   >
     <div id="background" style="position: absolute; background: #ffffff;"></div>
@@ -32,6 +43,12 @@
     <canvas id="bgLayer" style="position: absolute;"></canvas>
     <canvas id="grid" style="position: absolute; display: none;"></canvas>
     <canvas id="selectLayer" style="position: absolute;"></canvas>
+    <div id="sliderControls">
+      <div id="slider" v-if="controlMethod === 'slider'">
+
+      </div>
+      <div id="sliderJump" v-if="controlMethod === 'slider'">↑</div>
+    </div>
     <div id="blockSelect" class="blockSelect">
       <div v-for="(ids,groupName) in blocks" class="blockSect">
         <div class="blockSectLabel">{{groupName}}</div>
@@ -256,6 +273,7 @@
       "
       id="exportArea"
     >export text</textarea>
+  </div>
   </body>
   <script src="../lz-string.min.js"></script>
   <script src="../pixi-legacy.min.js"></script>

@@ -114,6 +114,7 @@ gridDisp.visible = false;
 selectLayer.stage.addChild(gridDisp);
 var buildDisp = new PIXI.Graphics();
 selectLayer.stage.addChild(buildDisp);
+if (isMobile) buildDisp.visible = false;
 var selectDisp = new PIXI.Graphics();
 selectDisp.visible = false;
 selectLayer.stage.addChild(selectDisp);
@@ -271,21 +272,33 @@ document.addEventListener("mousemove", function (event) {
   } else {
     updateBuildLocation(event.clientX, event.clientY);
   }
-  if (event.clientX < 200 && editor.showMenus) {
+  if (
+    event.clientX < 200 &&
+    editor.showMenus &&
+    controlMethod === "keyboard"
+  ) {
     if (id("editOptions").style.right === "100%") {
       id("editOptions").style.right = `calc(100% - 200px)`;
     }
-  } else {
+  } else if (controlMethod === "keyboard") {
     id("editOptions").style.right = "100%";
   }
-  if (event.clientX > window.innerWidth - 200 && editor.showMenus) {
+  if (
+    event.clientX > window.innerWidth - 200 &&
+    editor.showMenus &&
+    controlMethod === "keyboard"
+  ) {
     if (id("saveMenu").style.left === "100%") {
       id("saveMenu").style.left = `calc(100% - 200px)`;
     }
-  } else {
+  } else if (controlMethod === "keyboard") {
     id("saveMenu").style.left = "100%";
   }
-  if (event.clientY > window.innerHeight - 200 && editor.showMenus) {
+  if (
+    event.clientY > window.innerHeight - 200 &&
+    editor.showMenus &&
+    controlMethod === "keyboard"
+  ) {
     if (editor.editMode) {
       if (editor.editBlock !== undefined) {
         if (id("blockEdit").style.top === "100%") {
@@ -297,7 +310,7 @@ document.addEventListener("mousemove", function (event) {
         id("blockSelect").style.top = `calc(100% - 200px)`;
       }
     }
-  } else {
+  } else if (controlMethod === "keyboard") {
     id("blockSelect").style.top = "100%";
     if (editor.editBlock !== undefined) {
       id("blockEdit").style.top = "100%";

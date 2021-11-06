@@ -121,10 +121,14 @@ new BlockType(
     return app.renderer.generateTexture(g);
   },
   () => {
-    if (control.shift && canSave) {
-      setSpawn();
-      canSave = false;
-      drawLevel();
+    switch (controlMethod) {
+      case "keyboard":
+        if (control.shift && canSave) {
+          setSpawn();
+          canSave = false;
+          drawLevel();
+        }
+        break;
     }
   },
   (block, sprite = getSprite(block)) => {
