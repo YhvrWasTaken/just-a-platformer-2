@@ -50,7 +50,8 @@ const propData = {
     (block) => level[0].length * maxBlockSize - block.size
   ],
   size: ["num", "s", () => 6.25, () => 50],
-  eventPriority: ["int", "ep"],
+  giveJump: ["bool", "j"],
+  eventPriority: ["int", "ep", () => 0, () => Infinity],
   strictPriority: ["bool", "sp"],
   invisible: ["bool", "v"],
   dynamic: ["bool", "d"],
@@ -84,6 +85,7 @@ var blockEdit = new Vue({
       "x",
       "y",
       "size",
+      "giveJump",
       "eventPriority",
       "strictPriority",
       "invisible"
@@ -397,7 +399,7 @@ id("selectLayer").addEventListener("wheel", function (event) {
   }
 });
 function changeBuildSelect(block) {
-  editor.buildSelect = block;
+  editor.buildSelect = deepCopy(block);
   updateBuildDisp();
 }
 function updateBuildLocation(x, y) {
@@ -524,7 +526,7 @@ function select(selectRect, single = false, prev, build = false) {
           }
           if (single) {
             if (build) {
-              editor.buildSelect = deepCopy(block);
+              changeBuildSelect(block);
             } else editor.editSelect = [block];
             cycled = true;
             break;
@@ -1062,6 +1064,7 @@ function importSave() {
   storeSave();
 }
 function deleteSave(name) {
+  if (!confirm(`Are you sure you want to delete ${name}?`)) return;
   delete editor.saves[name];
   editor.saveOrder.splice(editor.saveOrder.indexOf(name), 1);
   if (editor.currentSave === name) editor.currentSave = undefined;
